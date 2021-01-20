@@ -1,11 +1,5 @@
 package org.example
 
-import java.time.Duration
-
-import org.apache.flink.api.common.eventtime.{
-  SerializableTimestampAssigner,
-  WatermarkStrategy
-}
 import org.apache.flink.contrib.streaming.state.RocksDBStateBackend
 import org.apache.flink.runtime.state.StateBackend
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
@@ -56,17 +50,9 @@ class KeyByAndCheckpointingTest extends AnyFlatSpec with Matchers {
       Event(1611145655000L, Key(1, 2))
     )
 
-    val waterMarkStrategy = WatermarkStrategy
-      .forBoundedOutOfOrderness[Event](Duration.ofSeconds(20))
-      .withTimestampAssigner(new SerializableTimestampAssigner[Event] {
-        override def extractTimestamp(element: Event,
-                                      recordTimestamp: Long): Long =
-          element.timestamp
-      })
-
     val resultStream = env
       .fromCollection(events)
-      .assignTimestampsAndWatermarks(waterMarkStrategy)
+      .assignTimestampsAndWatermarks(new TimestampExtractor)
       .keyBy(m => m.key)
       .timeWindow(
         Time.minutes(10),
