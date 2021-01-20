@@ -11,7 +11,7 @@ organization := "org.example"
 
 ThisBuild / scalaVersion := "2.11.12"
 
-val flinkVersion = "1.11.3"
+val flinkVersion = "1.9.1"
 
 val dependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
@@ -25,8 +25,6 @@ lazy val root = (project in file(".")).
   settings(
     libraryDependencies ++= dependencies,
   )
-
-//assembly / mainClass := Some("org.example.Job")
 
 // make run command include the provided dependencies
 Compile / run  := Defaults.runTask(Compile / fullClasspath,

@@ -10,6 +10,7 @@ class AggregationFunction
                        context: Context,
                        elements: Iterable[Event],
                        out: Collector[Output]): Unit = {
-    out.collect(Output(key, elements.size))
+    val numEvents = elements.size
+    out.collect(Output(key, numEvents))
   }
 }
